@@ -1,0 +1,202 @@
+schools:
+  - name: All Cannings Church of England Primary School
+    code: ALL C
+    tab: All Cannings
+  - name: Bishops Cannings Church of England (Aided) Primary School
+    code: B CAN
+    tab: Bishops Cannings
+  - name: Chirton Church of England Primary School
+    code: CHIR
+    tab: Chirton
+  - name: Dauntsey Academy Primary School
+    code: DAPS
+    tab: DAPS
+  - name: Devizes School
+    code: DEV
+    tab: Devizes
+  - name: Five Lanes CE VC Primary School
+    code: FIV
+    tab: Five Lanes
+  - name: Holy Trinity CofE Primary Academy
+    code: Gt C
+    tab: Holy Trinity
+  - name: Lavington School
+    code: LAV
+    tab: Lavington
+  - name: Nursteed Community Primary School
+    code: NCP
+    tab: Nursteed
+  - name: Rowde CofE Primary Academy
+    code: ROW
+    tab: Rowde
+  - name: Rushall CE VA School
+    code: RUS
+    tab: Rushall
+  - name: Seend Church of England Primary School
+    code: SE
+    tab: Seend
+  - name: Silverwood School - Rowde Campus
+    code: SRC
+    tab: Silverwood R
+  - name: Silverwood School - Trowbridge Campus
+    code: STC
+    tab:  Silverwood T
+  - name: Silverwood School and College - Chippenham
+    code: SCC
+    tab:  Silverwood C
+  - name: Southbroom St James Academy, Devizes
+    code: SB
+    tab: Southbroom
+  - name: St Barnabas CE VC Primary School, Market Lavington
+    code: St B
+    tab: St Barnabas
+  - name: St Joseph's Catholic Primary School
+    code: St Jo
+    tab: St Joseph's
+  - name: St Nicholas CofE VC Primary School
+    code: St N
+    tab: St Nicholas
+  - name: The Trinity CE Primary Academy
+    code: TY
+    tab: Trinity
+  - name: Urchfont C.E. Primary School
+    code: URF
+    tab: Urchfont
+  - name: Wansdyke School
+    code: WAN
+    tab: Wansdyke
+  - name: Woodborough CofE Primary School
+    code: WO
+    tab: Woodborough
+  - name: Other schools etc
+    code: OS
+    tab: Other Schools
+
+sports:
+  - name: ADVENTUROUS ACTIVITIES
+    tab: Adventurous Activities
+    school column: S
+  - name: ARCHERY
+    tab: Archery
+    school column: T
+  - name: ATHLETICS
+    tab: Athletics
+    school column: U
+  - name: BADMINTON
+    tab: Badminton
+    school column: V
+  - name: CANOEING
+    tab: Canoeing
+    school column: W
+  - name: GOLF
+    tab: Golf
+    school column: X
+  - name: GYMNASTICS
+    tab: Gymnastics
+    school column: Y
+  - name: JUDO
+    tab: Judo
+    school column: Z
+  - name: MOUNTAIN BIKING
+    tab: Mountain Biking
+    school column: AA
+  - name: POOL - ARTISTIC SWIMMING
+    tab: Artistic Swimming
+    school column: AB
+  - name: POOL - POOLSIDE DIVING
+    tab: Poolside Diving
+    school column: AC
+  - name: SKATEBOARDING
+    tab: Skateboarding
+    school column: AD
+  - name: SWORD FENCING
+    tab: Sword Fencing
+    school column: AE
+  - name: TABLE TENNIS
+    tab: Table Tennis
+    school column: AF
+  - name: TRAMPOLINING
+    tab: Trampolining
+    school column: AG
+  - name: VOLLEYBALL
+    tab: Volleyball
+    school column: AH
+
+by sport columns:
+  - name: "No"
+    to: A
+    from: A
+  - name: School
+    to: B
+    from: B
+  - name: First name
+    to: C
+    from: C
+  - name: Surname
+    to: D
+    from: D
+  - name: Date of Birth
+    to: E
+    from: E
+  - name: Parent's Name
+    to: F
+    from: F
+  - name: Year Group
+    to: G
+    from: G
+  - name: e-mail address
+    to: H
+    from: H
+  - name: Address 1
+    to: I
+    from: I
+  - name: Address 2
+    from: J
+    to: J
+  - name: Town
+    from: K
+    to: K
+  - name: Post Code
+    from: L
+    to: L
+  - name: Home Tel
+    from: M
+    to: M
+  - name: Mobile Tel
+    from: N
+    to: N
+  - name: Done Before Y/N
+    from: O
+    to: O
+  - name: Skill Level
+    from: AO
+    to: P
+  - name: Notes
+    from: AP
+    to: Q
+  - name: ACTIVITY
+    to: R
+    from: tab name
+  - name: VENUE
+    to: S
+  - name: VENUE ADDRESS
+    to: T
+  - name: DATE
+    to: U
+  - name: SESSION TIME
+    to: V
+  - name: REGISTRATION POINT
+    to: W
+  - name: MEET TIME
+    to: X
+  - name: AREA
+    to: Y
+  - name: Max No per session
+    to: Z
+  - name: Details 1
+    to: AA
+  - name: Details 2
+    to: AB
+  - name: Details 3
+    to: AC
+
