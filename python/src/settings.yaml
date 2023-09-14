@@ -126,77 +126,106 @@ by sport columns:
   - name: "No"
     to: A
     from: A
+    width: 4
   - name: School
     to: B
     from: B
+    width: 7
   - name: First name
     to: C
     from: C
+    width: 15
   - name: Surname
     to: D
     from: D
+    width: 20
   - name: Date of Birth
     to: E
     from: E
+    width: 10
   - name: Parent's Name
     to: F
     from: F
+    width: 25
   - name: Year Group
     to: G
     from: G
+    width: 6
   - name: e-mail address
     to: H
     from: H
+    width: 10
   - name: Address 1
     to: I
     from: I
+    width: 10
   - name: Address 2
     from: J
     to: J
+    width: 10
   - name: Town
     from: K
     to: K
+    width: 10
   - name: Post Code
     from: L
     to: L
+    width: 10
   - name: Home Tel
     from: M
     to: M
+    width: 10
   - name: Mobile Tel
     from: N
     to: N
+    width: 10
   - name: Done Before Y/N
     from: O
     to: O
+    width: 10
   - name: Skill Level
     from: AO
     to: P
+    width: 6
   - name: Notes
     from: AP
     to: Q
+    width: 20
   - name: ACTIVITY
     to: R
     from: tab name
+    width: 25
   - name: VENUE
     to: S
+    width: 25
   - name: VENUE ADDRESS
     to: T
+    width: 25
   - name: DATE
     to: U
+    width: 15
   - name: SESSION TIME
     to: V
+    width: 15
   - name: REGISTRATION POINT
     to: W
+    width: 15
   - name: MEET TIME
     to: X
+    width: 6
   - name: AREA
     to: Y
+    width: 15
   - name: Max No per session
     to: Z
+    width: 10
   - name: Details 1
     to: AA
+    width: 10
   - name: Details 2
     to: AB
+    width: 10
   - name: Details 3
     to: AC
+    width: 10
 
