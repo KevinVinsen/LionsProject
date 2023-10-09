@@ -140,6 +140,107 @@ def create_blank_workbook(yaml_config: CommentedMap) -> Workbook:
     return workbook
 
 
+def find_row(row, sheet_in):
+    for row_in in sheet_in.rows:
+        # Trim the row
+        trimmed_row = trim_row_data(row_in)
+        if (
+            trimmed_row[1] == row[1]
+            and trimmed_row[2] == row[2]
+            and trimmed_row[3] == row[3]
+            and trimmed_row[4] == row[4]
+        ):
+            # Found the row
+            return trimmed_row
+
+    return None
+
+
+def delete_rows(yaml_config, workbook_in, workbook_out):
+    for sport in yaml_config["sports"]:
+        sheet_in = workbook_in[sport["tab"]]
+        sheet_out = workbook_out[sport["tab"]]
+
+        rows_to_delete = []
+
+        for row_number, row in enumerate(sheet_out.rows, start=1):
+            if row_number == 1:
+                # Skip the heading row
+                continue
+
+            trimmed_row_out = trim_row_data(row)
+
+            # Does this row exist in the new file
+            if find_row(trimmed_row_out, sheet_in) is None:
+                LOG.info(
+                    f"Adding row to delete {row_number} "
+                    f"{trimmed_row_out[1]} {trimmed_row_out[2]} {trimmed_row_out[3]} "
+                    f"from {sport['tab']}"
+                )
+                rows_to_delete.append(row_number)
+
+        # Delete the rows
+        for row_number in reversed(rows_to_delete):
+            LOG.info(f"Deleting row {row_number} from {sport['tab']}")
+            sheet_out.delete_rows(row_number)
+
+
+def add_rows(yaml_config, workbook_in, workbook_out):
+    for sport in yaml_config["sports"]:
+        sheet_in = workbook_in[sport["tab"]]
+        sheet_out = workbook_out[sport["tab"]]
+
+        rows_to_add = []
+
+        for row_number, row in enumerate(sheet_in.rows, start=1):
+            if row_number == 1:
+                # Skip the heading row
+                continue
+
+            trimmed_row_in = trim_row_data(row)
+
+            # Does this row exist in the new file
+            if find_row(trimmed_row_in, sheet_out) is None:
+                rows_to_add.append(row)
+
+        # Delete the rows
+        for row in rows_to_add:
+            sheet_out.add_row(row)
+
+
+def update_existing_rows(yaml_config, workbook_in, workbook_out):
+    for sport in yaml_config["sports"]:
+        sheet_in = workbook_in[sport["tab"]]
+        sheet_out = workbook_out[sport["tab"]]
+
+        for row_number, row in enumerate(sheet_out.rows, start=1):
+            if row_number == 1:
+                # Skip the heading row
+                continue
+
+            trimmed_row_out = trim_row_data(row)
+
+            # Does this row exist in the both files
+            row_in = find_row(trimmed_row_out, sheet_in)
+            if row_in is not None:
+                # Do the updates
+                for column_index in range(4, 16):
+                    sheet_out.cell(row_number, column_index + 1).value = row_in[
+                        column_index
+                    ]
+
+
+def update_workbook(yaml_config, workbook_in, workbook_out):
+    # Pass 1: Delete rows that are not needed
+    delete_rows(yaml_config, workbook_in, workbook_out)
+
+    # Pass 2: Add new rows
+    add_rows(yaml_config, workbook_in, workbook_out)
+
+    # Pass 3: Update exist
+    update_existing_rows(yaml_config, workbook_in, workbook_out)
+
+
 def do_copy(args: Namespace):
     # Load the YAML
     with open(args.yaml_file, "r") as yaml_file:
@@ -151,38 +252,27 @@ def do_copy(args: Namespace):
 
     # If the output file exists read it
     if exists(args.output_file):
+        LOG.info(f"Updating file {args.output_file}")
+
+        # Create a temp workbook with the new values
+        LOG.info("Creating a temporary workbook")
+        workbook_temp = create_blank_workbook(yaml_config)
+        fill_sheets(yaml_config, workbook_in, workbook_temp)
+
+        # Load the current output file
         workbook_out = load_workbook(args.output_file)
-        output_status = "Updating"
+
+        # Start writing the output file
+        update_workbook(
+            yaml_config,
+            workbook_temp,
+            workbook_out,
+        )
+
     else:
+        LOG.info(f"Creating file {args.output_file}")
         workbook_out = create_blank_workbook(yaml_config)
-        output_status = "Creating"
-
-    # Start writing the output file
-    if output_status == "Updating":
-        LOG.info(f"{output_status} file {args.output_file}")
-        build_delete_items = extract_delete_items(
-            yaml_config, workbook_in, workbook_out
-        )
-        build_modify_items = extract_modify_items(
-            yaml_config, workbook_in, workbook_out
-        )
-        build_add_items = extract_add_items(yaml_config, workbook_in, workbook_out)
-
-    else:
-        build_delete_items = []
-        build_modify_items = []
-        build_add_items = extract_add_items(yaml_config, workbook_in, workbook_out)
-
-    if len(build_delete_items) > 0:
-        delete_items(yaml_config, workbook_out, build_delete_items)
-
-    if len(build_modify_items) > 0:
-        update_items(yaml_config, workbook_out, build_delete_items)
-
-    if len(build_add_items) > 0:
-        add_items(yaml_config, workbook_out, build_delete_items)
-
-    fill_sheets(yaml_config, workbook_in, workbook_out)
+        fill_sheets(yaml_config, workbook_in, workbook_out)
 
     # Write out the Excel file
     workbook_out.save(f"{args.output_file}")
@@ -197,17 +287,6 @@ def main(args: Namespace):
     if not exists(args.input_file):
         LOG.error(f"File {args.input_file} does not exist")
         return
-
-    if exists(args.output_file):
-        LOG.warning(f"File {args.output_file} already exists")
-
-        # Confirm overwrite
-        if user_confirm("Update the existing file?"):
-            LOG.info("Updating file")
-
-        else:
-            LOG.info("Not updating file")
-            return
 
     if not exists(args.yaml_file):
         LOG.error(f"File {args.yaml_file} does not exists")
