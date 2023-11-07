@@ -157,6 +157,7 @@ def find_row(row, sheet_in):
 
 
 def delete_rows(yaml_config, workbook_in, workbook_out):
+    LOG.info("Deleting rows if needed")
     for sport in yaml_config["sports"]:
         sheet_in = workbook_in[sport["tab"]]
         sheet_out = workbook_out[sport["tab"]]
@@ -185,7 +186,25 @@ def delete_rows(yaml_config, workbook_in, workbook_out):
             sheet_out.delete_rows(row_number)
 
 
+def get_bottom_row(sheet):
+    row_number = 1
+    for row_number, row_in in enumerate(sheet.rows, start=1):
+        # Trim the row
+        trimmed_row = trim_row_data(row_in)
+        if (
+            trimmed_row[1] is None
+            and trimmed_row[2] is None
+            and trimmed_row[3] is None
+            and trimmed_row[4] is None
+        ):
+            # Found the last row
+            return row_number
+
+    return row_number + 1
+
+
 def add_rows(yaml_config, workbook_in, workbook_out):
+    LOG.info("Adding rows if needed")
     for sport in yaml_config["sports"]:
         sheet_in = workbook_in[sport["tab"]]
         sheet_out = workbook_out[sport["tab"]]
@@ -203,12 +222,31 @@ def add_rows(yaml_config, workbook_in, workbook_out):
             if find_row(trimmed_row_in, sheet_out) is None:
                 rows_to_add.append(row)
 
-        # Delete the rows
-        for row in rows_to_add:
-            sheet_out.add_row(row)
+        # Add the rows
+        if rows_to_add:
+            # Find the bottom row
+            bottom_row = get_bottom_row(sheet_out)
+            for row in rows_to_add:
+                LOG.info(f"Adding row to {sport['tab']}")
+                sheet_out.insert_rows(bottom_row)
+
+                for column_index, cell in enumerate(row, start=1):
+                    sheet_out.cell(bottom_row, column_index).value = cell.value
+
+
+def not_equals(value1, value2):
+    if (
+        (value1 is None and value2 is None)
+        or (value1 is None and value2 == "")
+        or (value1 == "" and value2 is None)
+    ):
+        return False
+
+    return value1 != value2
 
 
 def update_existing_rows(yaml_config, workbook_in, workbook_out):
+    LOG.info("Updating existing rows is needed")
     for sport in yaml_config["sports"]:
         sheet_in = workbook_in[sport["tab"]]
         sheet_out = workbook_out[sport["tab"]]
@@ -225,9 +263,18 @@ def update_existing_rows(yaml_config, workbook_in, workbook_out):
             if row_in is not None:
                 # Do the updates
                 for column_index in range(4, 16):
-                    sheet_out.cell(row_number, column_index + 1).value = row_in[
-                        column_index
-                    ]
+                    if not_equals(
+                        sheet_out.cell(row_number, column_index + 1).value,
+                        row_in[column_index],
+                    ):
+                        LOG.info(
+                            f"Updating row {row_number}, column {column_index} in {sport['tab']} "
+                            f"from {sheet_out.cell(row_number, column_index + 1).value} "
+                            f"to {row_in[column_index]}"
+                        )
+                        sheet_out.cell(row_number, column_index + 1).value = row_in[
+                            column_index
+                        ]
 
 
 def update_workbook(yaml_config, workbook_in, workbook_out):
